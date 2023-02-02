@@ -2,6 +2,7 @@ from celery import shared_task
 import requests
 from video_service.serializers import VideoSerializer, Videos
 from datetime import datetime, timedelta
+from django.db import transaction
 
 class Youtube_client():
 
@@ -10,7 +11,7 @@ class Youtube_client():
 
     def search(self, query):
         try: 
-            publishedAfter = datetime.now() - timedelta(hours=1)
+            publishedAfter = datetime.now() - timedelta(minutes=1)
             params = {
                 'part': 'snippet',
                 'maxResults': 20,
@@ -33,23 +34,28 @@ def test(a,b):
 
 @shared_task(name='youtube_video_getter')
 def get_and_create_youtube_video_entries():
-    client = Youtube_client()
-    response = client.search(query='football')
-    
-    if not response:
-        return
-    
-    responseList = response.get('items')
-    
-    if not responseList or len(responseList) == 0:
-        return
+    with transaction.atomic():
+        client = Youtube_client()
+        response = client.search(query='football')
+        
+        if not response:
+            return
+        
+        responseList = response.get('items')
+        print(responseList)
+        if not responseList or len(responseList) == 0:
+            return
 
-    for video in responseList:
-        video_object = dict(
-            title=video['snippet']['title'], 
-            description=video['snippet']['description'], 
-            publish_date=video['snippet']['publishedAt'],
-            thumbnail_meta=video['snippet']['thumbnails']
-            )
+        for video in responseList:
+            prev_video_obj = Videos.objects.filter(video_id__exact=video['id']['videoId'])
+            if prev_video_obj:
+                continue
+            video_object = dict(
+                title=video['snippet']['title'], 
+                video_id=video['id']['videoId'],
+                description=video['snippet']['description'], 
+                publish_date=video['snippet']['publishedAt'],
+                thumbnail_meta=video['snippet']['thumbnails']
+                )
         object = VideoSerializer().create(validated_data=video_object)
         object.save()

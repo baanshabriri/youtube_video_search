@@ -2,6 +2,7 @@ from django.db import models
 
 class Videos(models.Model):
     id             = models.AutoField(primary_key=True)
+    video_id       = models.CharField(max_length=128, unique=True, blank=False, null=False)
     title          = models.CharField(max_length=512, blank=True, null=True)
     description    = models.TextField(default=None, null=True, blank=True)
     publish_date   = models.DateTimeField(null=True, blank=True)

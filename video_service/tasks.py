@@ -11,7 +11,7 @@ class Youtube_client():
 
     def search(self, query):
         try: 
-            publishedAfter = datetime.now() - timedelta(minutes=1)
+            publishedAfter = datetime.now() - timedelta(minutes=30)
             params = {
                 'part': 'snippet',
                 'maxResults': 20,
@@ -42,7 +42,7 @@ def get_and_create_youtube_video_entries():
             return
         
         responseList = response.get('items')
-        print(responseList)
+
         if not responseList or len(responseList) == 0:
             return
 
@@ -57,5 +57,5 @@ def get_and_create_youtube_video_entries():
                 publish_date=video['snippet']['publishedAt'],
                 thumbnail_meta=video['snippet']['thumbnails']
                 )
-        object = VideoSerializer().create(validated_data=video_object)
-        object.save()
+            object = VideoSerializer().create(validated_data=video_object)
+            object.save()

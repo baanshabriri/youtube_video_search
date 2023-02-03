@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   django:
-    restart: unless-stopped
     build: .
     container_name: django
     command: >
@@ -12,28 +11,56 @@ services:
     volumes:
       - .:/usr/src/app/
     ports:
-      - 8000
+      - "8000:8000"
     environment:
       - DEBUG=1
       - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 0.0.0.0 [::1]
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=pgdb
+      - DJANGO_DB=postgresql
     depends_on:
-      - celery
+      - celery-beat
       - redis
-  celery:
-    restart: unless-stopped
+  celery-beat:
     build: 
       context: .
     command: celery -A youtube_video_search beat --loglevel=INFO
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=pgdb
+      - DJANGO_DB=postgresql
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-=#s4w5kh00+l=855&brwqq@l!8!hww_gj#p*s=o5ngk$=fxeyt
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
     volumes:
       - .:/usr/src/app
     depends_on:
       - redis
+  pgdb:
+      image: postgres:13.0-alpine
+      restart: unless-stopped
+      volumes:
+          - pgdata:/var/lib/postgresql/data/
+      environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_HOST=pgdb
+        - DJANGO_DB=postgresql
+      expose:
+          - 5432    
   redis:
     image: "redis:alpine"
     expose:
-      - 6379
+      - "6379:6379"
 
 volumes:
   pgdata:

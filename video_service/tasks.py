@@ -20,9 +20,7 @@ class Youtube_client():
                 'key': self.API_KEY,
                 'publishedAfter': publishedAfter.strftime('%Y-%m-%dT%H:%M:%SZ')
             }
-            print(params)
             response = requests.get(url=self.BASE_URL, params=params)
-            print(response)
             if response:
                 return response.json()
         except Exception as e:

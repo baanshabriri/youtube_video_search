@@ -57,5 +57,12 @@ def get_and_create_youtube_video_entries():
                 publish_date=video['snippet']['publishedAt'],
                 thumbnail_meta=video['snippet']['thumbnails']
                 )
-            object = VideoSerializer().create(validated_data=video_object)
+            # object = VideoSerializer().create(validated_data=video_object)
+            object = Videos.objects.create(
+                title=video['snippet']['title'], 
+                video_id=video['id']['videoId'],
+                description=video['snippet']['description'], 
+                publish_date=video['snippet']['publishedAt'],
+                thumbnail_meta=video['snippet']['thumbnails']
+            )
             object.save()

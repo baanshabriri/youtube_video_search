@@ -50,14 +50,6 @@ def get_and_create_youtube_video_entries():
             prev_video_obj = Videos.objects.filter(video_id__exact=video['id']['videoId'])
             if prev_video_obj:
                 continue
-            video_object = dict(
-                title=video['snippet']['title'], 
-                video_id=video['id']['videoId'],
-                description=video['snippet']['description'], 
-                publish_date=video['snippet']['publishedAt'],
-                thumbnail_meta=video['snippet']['thumbnails']
-                )
-            # object = VideoSerializer().create(validated_data=video_object)
             object = Videos.objects.create(
                 title=video['snippet']['title'], 
                 video_id=video['id']['videoId'],

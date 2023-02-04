@@ -11,7 +11,7 @@ class Youtube_client():
 
     def search(self, query):
         try: 
-            publishedAfter = datetime.now() - timedelta(minutes=30)
+            publishedAfter = datetime.now() - timedelta(minutes=5)
             params = {
                 'part': 'snippet',
                 'maxResults': 20,

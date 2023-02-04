@@ -1,6 +1,8 @@
 # youtube_video_search
 
-docker-compose up -> starts the django server
+docker-compose up -> starts the django server, redis, celery-beat and postgres db
+
+docker-compose up -d -> starts the django server, redis, celery-beat and postgres db in the background
 
 http://localhost:8000/videos/?ordering=-created_at -> gives a list of videos in descending order
 

@@ -44,5 +44,6 @@ def youtube_keyword_search_client(keyword):
             next_page_token = dict(response).get('nextPageToken', None)
     except Exception as e:
         print(e)
+        return []
 
     return response_list

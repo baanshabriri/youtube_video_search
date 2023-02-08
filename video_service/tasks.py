@@ -1,31 +1,7 @@
 from celery import shared_task
-import requests
-from video_service.serializers import VideoSerializer, Videos
-from datetime import datetime, timedelta
+from video_service.serializers import Videos
 from django.db import transaction
 from youtube_client import youtube_keyword_search_client
-
-# class Youtube_client():
-
-#     API_KEY = 'AIzaSyALZSeqVGPD3r0aktpo0aMM0zjQY1SOTOQ'
-#     BASE_URL = 'https://www.googleapis.com/youtube/v3/search'
-
-#     def search(self, query):
-#         try: 
-#             publishedAfter = datetime.now() - timedelta(minutes=5)
-#             params = {
-#                 'part': 'snippet',
-#                 'maxResults': 20,
-#                 'q': query,
-#                 'type': 'video',
-#                 'key': self.API_KEY,
-#                 'publishedAfter': publishedAfter.strftime('%Y-%m-%dT%H:%M:%SZ')
-#             }
-#             response = requests.get(url=self.BASE_URL, params=params)
-#             if response:
-#                 return response.json()
-#         except Exception as e:
-#             print(e)
 
 @shared_task
 def test(a,b):

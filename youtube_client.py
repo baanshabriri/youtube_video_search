@@ -28,8 +28,9 @@ def youtube_keyword_search_client(keyword):
             publishedAfter=published_after.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
         response = request.execute()
-        response_list = dict(response).get('items', [])
-        next_page_token = dict(response).get('nextPageToken', None)
+        response = dict(response)
+        response_list = response.get('items', [])
+        next_page_token = response.get('nextPageToken', None)
         while next_page_token is not None:
             request = youtube.search().list(
                 part='snippet',
